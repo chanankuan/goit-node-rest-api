@@ -38,10 +38,13 @@ async function addContact(name, email, phone) {
 
 async function updateContact(contactId, body) {
   const contacts = await listContacts();
-  const contact = await getContactById(contactId);
   const index = contacts.findIndex(({ id }) => id === contactId);
-  const updatedContact = { ...contact, ...body };
 
+  if (index === -1) {
+    return null;
+  }
+
+  const updatedContact = { ...contacts[index], ...body };
   contacts.splice(index, 1, updatedContact);
   await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
 
