@@ -4,56 +4,62 @@ import contactsService from '../services/contactsServices.js';
 
 const getAllContacts = async (_, res) => {
   const contacts = await contactsService.listContacts();
-  res.status(200).json(contacts);
+  res.json(contacts);
 };
 
 const getContactById = async (req, res) => {
-  const contact = await contactsService.getContactById(req.params.id);
+  const { id } = req.params;
+
+  const contact = await contactsService.getContactById(id);
 
   if (!contact) {
     throw HttpError(404);
   }
 
-  res.status(200).json(contact);
+  res.json(contact);
 };
 
 const deleteContact = async (req, res) => {
-  const contact = await contactsService.removeContact(req.params.id);
+  const { id } = req.params;
 
-  if (!contact) {
+  const deletedContact = await contactsService.removeContact(id);
+
+  if (!deletedContact) {
     throw HttpError(404);
   }
 
-  res.status(200).json(contact);
+  res.json(deletedContact);
 };
 
-const createContact = async (req, res, next) => {
+const createContact = async (req, res) => {
   const newContact = await contactsService.addContact(req.body);
   res.status(201).json(newContact);
 };
 
-const updateContact = async (req, res, next) => {
+const updateContact = async (req, res) => {
   const { id } = req.params;
-  const body = req.body;
+  const { body } = req;
+
   const updatedContact = await contactsService.updateContact(id, body);
 
   if (!updatedContact) {
-    return next(HttpError(404));
+    throw HttpError(404);
   }
 
-  res.status(200).json(updatedContact);
+  res.json(updatedContact);
 };
 
-const updateStatusContact = async (req, res, next) => {
+const updateStatusContact = async (req, res) => {
   const { id } = req.params;
-  const body = req.body;
+  const { body } = req;
+
   const updatedContact = await contactsService.updateContact(id, body);
 
   if (!updatedContact) {
-    return next(HttpError(404));
+    throw HttpError(404);
   }
 
-  res.status(200).json(updatedContact);
+  res.json(updatedContact);
 };
 
 export default {
