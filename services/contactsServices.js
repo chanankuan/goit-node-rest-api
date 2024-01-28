@@ -1,55 +1,18 @@
-import fs from 'fs/promises';
-import path from 'path';
-import { nanoid } from 'nanoid';
+import { Contact } from '../models/contact.js';
 
-const contactsPath = path.join('db', 'contacts.json');
+const listContacts = () => Contact.find();
 
-async function listContacts() {
-  const data = await fs.readFile(contactsPath, { encoding: 'utf-8' });
-  return JSON.parse(data);
-}
+const getContactById = (contactId) => Contact.findById(contactId);
 
-async function getContactById(contactId) {
-  const contacts = await listContacts();
-  return contacts.find(({ id }) => id === contactId) ?? null;
-}
+const removeContact = (contactId) => Contact.findByIdAndDelete(contactId);
 
-async function removeContact(contactId) {
-  const contacts = await listContacts();
-  const index = contacts.findIndex(({ id }) => id === contactId);
+const addContact = (body) => Contact.create(body);
 
-  if (index === -1) return null;
+const updateContact = (contactId, body) =>
+  Contact.findByIdAndUpdate(contactId, body, { new: true });
 
-  const [removedContacts] = contacts.splice(index, 1);
-  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
-
-  return removedContacts;
-}
-
-async function addContact(name, email, phone) {
-  const contacts = await listContacts();
-  const newContact = { id: nanoid(), name, email, phone };
-
-  contacts.push(newContact);
-  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
-
-  return newContact;
-}
-
-async function updateContact(contactId, body) {
-  const contacts = await listContacts();
-  const index = contacts.findIndex(({ id }) => id === contactId);
-
-  if (index === -1) {
-    return null;
-  }
-
-  const updatedContact = { ...contacts[index], ...body };
-  contacts.splice(index, 1, updatedContact);
-  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
-
-  return updatedContact;
-}
+const updateStatusContact = (contactId, body) =>
+  Contact.findByIdAndUpdate(contactId, body, { new: true });
 
 export default {
   listContacts,
@@ -57,4 +20,5 @@ export default {
   removeContact,
   addContact,
   updateContact,
+  updateStatusContact,
 };

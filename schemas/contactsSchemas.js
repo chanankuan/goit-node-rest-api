@@ -9,6 +9,7 @@ export const createContactSchema = Joi.object({
     .messages({
       'string.pattern.base': 'Phone must be in the format (XXX) XXX-XXXX',
     }),
+  favorite: Joi.boolean(),
 });
 
 export const updateContactSchema = Joi.object({
@@ -19,6 +20,7 @@ export const updateContactSchema = Joi.object({
     .messages({
       'string.pattern.base': 'Phone must be in the format (XXX) XXX-XXXX',
     }),
+  favorite: Joi.boolean(),
 })
   .min(1)
   .messages({
