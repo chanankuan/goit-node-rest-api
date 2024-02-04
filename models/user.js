@@ -21,20 +21,4 @@ const userSchema = new Schema(
   { versionKey: false }
 );
 
-/**
- * Define a post hook for the document
- */
-// userSchema.post('save', (error, _, next) => {
-//   const { code, name } = error;
-
-//   if (code === 11000 && name === 'MongoServerError') {
-//     error.status = 409;
-//     error.message = 'Email in use';
-//   } else {
-//     error.status = 400;
-//   }
-
-//   next();
-// });
-
 export const User = model('User', userSchema);

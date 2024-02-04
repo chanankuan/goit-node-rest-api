@@ -2,18 +2,28 @@ import { HttpError, trycatch } from '../helpers/index.js';
 import service from '../services/contactsServices.js';
 
 const getAllContacts = async (req, res) => {
+  const { page = 1, limit = 5, favorite } = req.query;
   const { _id: ownerId } = req.user;
 
-  const page = Number(req.query.page) || 1;
-  const limit = Number(req.query.limit) || 5;
-  const favorite = req.query.favorite && req.query.favorite === 'true';
-  const skip = (page - 1) * limit;
+  const skip = (Number(page) - 1) * Number(limit);
 
-  const contacts = await service.listContacts(
-    { skip, limit, favorite },
-    ownerId
-  );
-  res.json({ page, total: 5, contacts });
+  const searchQuery = {
+    owner: ownerId,
+  };
+
+  if (favorite) {
+    searchQuery.favorite = favorite === 'true';
+  }
+
+  const contacts = await service.listContacts(searchQuery, { skip, limit });
+  const total = await service.getCountDocuments(searchQuery);
+
+  res.json({
+    page: Number(page),
+    total: total,
+    per_page: Number(limit),
+    contacts,
+  });
 };
 
 const getContactById = async (req, res) => {
@@ -43,9 +53,9 @@ const deleteContact = async (req, res) => {
 };
 
 const createContact = async (req, res) => {
-  const { _id: owner } = req.user;
+  const { _id: ownerId } = req.user;
 
-  const newContact = await service.addContact({ ...req.body, owner });
+  const newContact = await service.addContact({ ...req.body, ownerId });
   res.status(201).json(newContact);
 };
 

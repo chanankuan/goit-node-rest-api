@@ -1,20 +1,14 @@
 import { Contact } from '../models/contact.js';
 
-const listContacts = (query, ownerId) => {
-  const search = {
-    owner: ownerId,
-  };
+const getCountDocuments = (query) => {
+  return Contact.countDocuments(query);
+};
 
-  const options = {
-    skip: query.skip,
-    limit: query.limit,
-  };
-
-  if (query.favorite) {
-    search.favorite = query.favorite;
-  }
-
-  return Contact.find(search, null, options);
+const listContacts = (query, options) => {
+  return Contact.find(query, null, options).populate(
+    'owner',
+    'email subscription'
+  );
 };
 
 const getContactById = (contactId, ownerId) => {
@@ -42,6 +36,7 @@ const updateStatusContact = (contactId, body, ownerId) => {
 };
 
 export default {
+  getCountDocuments,
   listContacts,
   getContactById,
   removeContact,
