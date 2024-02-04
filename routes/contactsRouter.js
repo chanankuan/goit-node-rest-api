@@ -4,11 +4,13 @@ import {
   createContactSchema,
   updateContactFavoriteSchema,
   updateContactSchema,
-} from '../schemas/contactsSchemas.js';
-import validateBody from '../helpers/validateBody.js';
-import isValidId from '../helpers/isValidId.js';
+} from '../schemas/index.js';
+import { validateBody, isValidId } from '../helpers/index.js';
+import { authenticate } from '../middlewares/index.js';
 
 const contactsRouter = express.Router();
+
+contactsRouter.use(authenticate);
 
 contactsRouter.get('/', controllers.getAllContacts);
 

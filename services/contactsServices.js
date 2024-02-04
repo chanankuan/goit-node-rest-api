@@ -1,18 +1,45 @@
 import { Contact } from '../models/contact.js';
 
-const listContacts = () => Contact.find();
+const listContacts = (query, ownerId) => {
+  const search = {
+    owner: ownerId,
+  };
 
-const getContactById = (contactId) => Contact.findById(contactId);
+  const options = {
+    skip: query.skip,
+    limit: query.limit,
+  };
 
-const removeContact = (contactId) => Contact.findByIdAndDelete(contactId);
+  if (query.favorite) {
+    search.favorite = query.favorite;
+  }
 
-const addContact = (body) => Contact.create(body);
+  return Contact.find(search, null, options);
+};
 
-const updateContact = (contactId, body) =>
-  Contact.findByIdAndUpdate(contactId, body, { new: true });
+const getContactById = (contactId, ownerId) => {
+  return Contact.find({ _id: contactId, owner: ownerId });
+};
 
-const updateStatusContact = (contactId, body) =>
-  Contact.findByIdAndUpdate(contactId, body, { new: true });
+const removeContact = (contactId, ownerId) => {
+  return Contact.findOneAndDelete({ _id: contactId, owner: ownerId });
+};
+
+const addContact = (body) => {
+  return Contact.create(body);
+};
+
+const updateContact = (contactId, body, ownerId) => {
+  return Contact.findOneAndUpdate({ _id: contactId, owner: ownerId }, body, {
+    new: true,
+  });
+};
+
+const updateStatusContact = (contactId, body, ownerId) => {
+  return Contact.findByIdAndUpdate({ _id: contactId, owner: ownerId }, body, {
+    new: true,
+  });
+};
 
 export default {
   listContacts,
