@@ -55,7 +55,7 @@ const deleteContact = async (req, res) => {
 const createContact = async (req, res) => {
   const { _id: ownerId } = req.user;
 
-  const newContact = await service.addContact({ ...req.body, ownerId });
+  const newContact = await service.addContact({ ...req.body, owner: ownerId });
   res.status(201).json(newContact);
 };
 
