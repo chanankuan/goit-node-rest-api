@@ -5,8 +5,7 @@ import {
   updateContactFavoriteSchema,
   updateContactSchema,
 } from '../schemas/index.js';
-import { validateBody, isValidId } from '../helpers/index.js';
-import { authenticate } from '../middlewares/index.js';
+import { authenticate, isValidId, validateBody } from '../middlewares/index.js';
 
 const contactsRouter = express.Router();
 

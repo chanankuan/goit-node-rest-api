@@ -1,4 +1,4 @@
 export * from './HttpError.js';
-export * from './isValidId.js';
+export * from '../middlewares/isValidId.js';
 export * from './trycatch.js';
-export * from './validateBody.js';
+export * from '../middlewares/validateBody.js';

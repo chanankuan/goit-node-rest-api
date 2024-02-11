@@ -23,11 +23,11 @@ const loginUser = async (userId) => {
 
   const token = jwt.sign(payload, config.SECRET_KEY, { expiresIn: '30d' });
 
-  return User.findByIdAndUpdate(userId, { token }, { new: true });
+  return updateUser(userId, { token });
 };
 
 const logoutUser = async (userId) => {
-  await User.findByIdAndUpdate(userId, { token: '' });
+  await updateUser(userId, { token: '' });
 };
 
 const updateUserAvatar = async (userId, fileData) => {
