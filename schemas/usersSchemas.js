@@ -34,3 +34,9 @@ export const subscriptionSchema = Joi.object({
     .required()
     .valid(...subscriptionOptions),
 });
+
+export const avatarURLSchema = Joi.object({
+  avatarURL: Joi.required().messages({
+    'any.required': '"avatarURL" is a required field',
+  }),
+});
