@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import config from '../environment.js';
-import { findUserById } from '../services/authServices.js';
+import service from '../services/authServices.js';
 import { HttpError } from '../helpers/index.js';
 
 export const authenticate = async (req, _, next) => {
@@ -12,7 +12,7 @@ export const authenticate = async (req, _, next) => {
 
   try {
     const { id } = jwt.verify(token, config.SECRET_KEY);
-    const user = await findUserById(id);
+    const user = await service.findUserById(id);
 
     if (!user || !user.token) {
       next(HttpError(401, 'Not authorized'));
