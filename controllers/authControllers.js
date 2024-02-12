@@ -64,6 +64,8 @@ const updateSubscription = async (req, res) => {
 
 const updateAvatar = async (req, res) => {
   const { _id: userId } = req.user;
+
+  if (!req.file) throw HttpError(400, '"avatarURL" is a required field');
   const user = await services.updateUserAvatar(userId, req.file);
 
   res.json({ avatarURL: user.avatarURL });

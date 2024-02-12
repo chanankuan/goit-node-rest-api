@@ -4,7 +4,6 @@ import {
   registerSchema,
   loginSchema,
   subscriptionSchema,
-  avatarURLSchema,
 } from '../schemas/index.js';
 import { authenticate, validateBody, upload } from '../middlewares/index.js';
 
@@ -26,7 +25,6 @@ authRouter.patch(
 );
 authRouter.patch(
   '/avatars',
-  validateBody(avatarURLSchema),
   upload.single('avatarURL'),
   controllers.updateAvatar
 );
