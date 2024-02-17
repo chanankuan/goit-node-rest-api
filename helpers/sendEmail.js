@@ -4,10 +4,15 @@ import config from '../environment.js';
 
 const mailgun = new Mailgun(formData);
 
-const sendEmail = body => {
+const mg = mailgun.client({
+  username: 'api',
+  key: process.env.MAILGUN_API_KEY,
+});
+
+export const sendEmail = body => {
   const emailInfo = {
     ...body,
-    from: 'Antonio <matchamagic3@gmail.com>',
+    from: 'Matcha Magic <matchamagic3@gmail.com>',
   };
 
   mg.messages

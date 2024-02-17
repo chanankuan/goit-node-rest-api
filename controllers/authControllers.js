@@ -5,9 +5,7 @@ const register = async (req, res) => {
   const { email, password } = req.body;
   const user = await services.getUser({ email });
 
-  if (user) {
-    throw HttpError(409, 'Email in use');
-  }
+  if (user) throw HttpError(409, 'Email in use');
 
   const newUser = await services.createUser({ email, password });
 
@@ -16,31 +14,42 @@ const register = async (req, res) => {
   });
 };
 
-const verifyToken = async (req, res) => {
+const verifyEmail = async (req, res) => {
   const { verificationToken } = req.params;
   const user = await services.getUser({ verificationToken });
 
-  if (!user) {
-    throw HttpError(404, 'User not found');
-  }
+  if (!user) throw HttpError(404, 'User Not found');
 
-  await updateUser(user._id, { verificationToken: null });
+  await services.updateUser(user._id, {
+    verify: true,
+    verificationToken: null,
+  });
 
   res.json({ message: 'Verification successful' });
+};
+
+const resendVerifyEmail = async (req, res) => {
+  const { email } = req.body;
+  const user = await services.getUser({ email });
+
+  if (!user) throw HttpError(404, 'User Not found');
+  if (user.verify) throw HttpError(400, 'Verification has already been passed');
+
+  await services.sendVerifyEmail(user);
+
+  res.json({ message: 'Verification email sent' });
 };
 
 const login = async (req, res) => {
   const { email, password } = req.body;
 
   const user = await services.getUser({ email });
-  if (!user) {
-    throw HttpError(401, 'Email or password is wrong');
-  }
+
+  if (!user.verify) throw HttpError(401, 'Email is not verified');
+  if (!user) throw HttpError(401, 'Email or password is wrong');
 
   const isValidPassword = await user.isValidPassword(password);
-  if (!isValidPassword) {
-    throw HttpError(401, 'Email or password is wrong');
-  }
+  if (!isValidPassword) throw HttpError(401, 'Email or password is wrong');
 
   const loggedInUser = await services.loginUser(user._id);
 
@@ -86,7 +95,8 @@ const updateAvatar = async (req, res) => {
 
 export default {
   register: trycatch(register),
-  verifyToken: trycatch(verifyToken),
+  verifyEmail: trycatch(verifyEmail),
+  resendVerifyEmail: trycatch(resendVerifyEmail),
   login: trycatch(login),
   getCurrent,
   logout,

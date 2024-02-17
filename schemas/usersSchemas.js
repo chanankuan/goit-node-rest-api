@@ -3,11 +3,19 @@ import Joi from 'joi';
 const emailRegex = new RegExp('^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$');
 const subscriptionOptions = ['starter', 'pro', 'business'];
 
+export const emailSchema = Joi.object({
+  email: Joi.string().required().pattern(emailRegex).messages({
+    'string.pattern.base': 'Incorrect email format',
+    'string.empty': '"email" cannot be an empty field',
+    'any.required': 'missing required field email',
+  }),
+});
+
 export const registerSchema = Joi.object({
   email: Joi.string().required().pattern(emailRegex).messages({
     'string.pattern.base': 'Incorrect email format',
     'string.empty': '"email" cannot be an empty field',
-    'any.required': '"email" is a required field',
+    'any.required': 'missing required field email',
   }),
   password: Joi.string().required().min(6).messages({
     'string.empty': '"password" cannot be an empty field',
@@ -21,7 +29,7 @@ export const loginSchema = Joi.object({
   email: Joi.string().required().pattern(emailRegex).messages({
     'string.pattern.base': 'Incorrect email format',
     'string.empty': '"email" cannot be an empty field',
-    'any.required': '"email" is a required field',
+    'any.required': 'missing required field email',
   }),
   password: Joi.string().required().messages({
     'string.empty': '"password" cannot be an empty field',

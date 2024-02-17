@@ -4,6 +4,7 @@ import {
   registerSchema,
   loginSchema,
   subscriptionSchema,
+  emailSchema,
 } from '../schemas/index.js';
 import { authenticate, validateBody, upload } from '../middlewares/index.js';
 
@@ -14,7 +15,12 @@ authRouter.post(
   validateBody(registerSchema),
   controllers.register
 );
-authRouter.get('/verify/:verificationToken', controllers.verifyToken);
+authRouter.get('/verify/:verificationToken', controllers.verifyEmail);
+authRouter.post(
+  '/verify',
+  validateBody(emailSchema),
+  controllers.resendVerifyEmail
+);
 authRouter.post('/login', validateBody(loginSchema), controllers.login);
 authRouter.use(authenticate);
 authRouter.get('/current', controllers.getCurrent);
